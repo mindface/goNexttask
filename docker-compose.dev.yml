@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: gonexttask-db-dev
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: gonexttask
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data_dev:/var/lib/postgresql/data
+      - ./migrations:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - gonexttask-network-dev
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: gonexttask-api-dev
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: password
+      DB_NAME: gonexttask
+      DB_SSLMODE: disable
+      PORT: 8080
+      JWT_SECRET: dev-secret-key
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/app
+      - /app/vendor
+      - /app/tmp
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - gonexttask-network-dev
+    command: air
+
+  adminer:
+    image: adminer
+    container_name: gonexttask-adminer
+    ports:
+      - "8081:8080"
+    networks:
+      - gonexttask-network-dev
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data_dev:
+
+networks:
+  gonexttask-network-dev:
+    driver: bridge
