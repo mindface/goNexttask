@@ -16,7 +16,7 @@ RUN go mod download
 
 # Copy source code and migrations
 COPY . .
-COPY ./migrations/ ./migrations/
+COPY migrations/ ./migrations/
 
 # Build the application
 RUN CGO_ENABLED=1 GOOS=linux go build -a -installsuffix cgo -o main cmd/api/main.go
