@@ -14,8 +14,9 @@ COPY go.sum ./
 # Download dependencies
 RUN go mod download
 
-# Copy source code
+# Copy source code and migrations
 COPY . .
+COPY migrations/ ./migrations/
 
 # Build the application
 RUN CGO_ENABLED=1 GOOS=linux go build -a -installsuffix cgo -o main cmd/api/main.go
@@ -36,8 +37,8 @@ WORKDIR /app
 # Copy binary from builder
 COPY --from=builder /app/main .
 
-# Copy migrations if they exist
-COPY --chown=appuser:appuser migrations/ ./migrations/
+# Copy migrations from builder
+COPY --from=builder /app/migrations ./migrations
 
 # Change ownership
 RUN chown -R appuser:appuser /app
