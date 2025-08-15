@@ -1,94 +1,41 @@
-# GoNexttask - ベアリング製造・金属加工向け統合管理システム
+![act-logo](https://raw.githubusercontent.com/wiki/nektos/act/img/logo-150.png)
 
-[![CI/CD Pipeline](https://github.com/YOUR_USERNAME/goNexttask/workflows/CI/CD%20Pipeline/badge.svg)](https://github.com/YOUR_USERNAME/goNexttask/actions)
-[![Go Report Card](https://goreportcard.com/badge/github.com/YOUR_USERNAME/goNexttask)](https://goreportcard.com/report/github.com/YOUR_USERNAME/goNexttask)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Docker](https://img.shields.io/badge/docker-ready-blue.svg)](https://www.docker.com/)
+# Overview [![push](https://github.com/nektos/act/workflows/push/badge.svg?branch=master&event=push)](https://github.com/nektos/act/actions) [![Go Report Card](https://goreportcard.com/badge/github.com/nektos/act)](https://goreportcard.com/report/github.com/nektos/act) [![awesome-runners](https://img.shields.io/badge/listed%20on-awesome--runners-blue.svg)](https://github.com/jonico/awesome-runners)
 
-DDDアーキテクチャに基づいた生産管理、NC加工連携、品質管理システム
+> "Think globally, `act` locally"
 
-## 🚀 特徴
+Run your [GitHub Actions](https://developer.github.com/actions/) locally! Why would you want to do this? Two reasons:
 
-- **Domain Driven Design**: 明確に分離された3つのコンテキスト
-- **マイクロサービス対応**: 独立してスケール可能な設計
-- **リアルタイム連携**: NC機器との双方向通信
-- **完全トレーサビリティ**: 原材料から完成品まで追跡
-- **高可用性**: 99.5%稼働率を目標とした設計
-- **セキュア**: JWT認証、RBAC、監査ログ
+- **Fast Feedback** - Rather than having to commit/push every time you want to test out the changes you are making to your `.github/workflows/` files (or for any changes to embedded GitHub actions), you can use `act` to run the actions locally. The [environment variables](https://help.github.com/en/actions/configuring-and-managing-workflows/using-environment-variables#default-environment-variables) and [filesystem](https://help.github.com/en/actions/reference/virtual-environments-for-github-hosted-runners#filesystems-on-github-hosted-runners) are all configured to match what GitHub provides.
+- **Local Task Runner** - I love [make](<https://en.wikipedia.org/wiki/Make_(software)>). However, I also hate repeating myself. With `act`, you can use the GitHub Actions defined in your `.github/workflows/` to replace your `Makefile`!
 
-## プロジェクト構造
+> [!TIP]
+> **Now Manage and Run Act Directly From VS Code!**<br/>
+> Check out the [GitHub Local Actions](https://sanjulaganepola.github.io/github-local-actions-docs/) Visual Studio Code extension which allows you to leverage the power of `act` to run and test workflows locally without leaving your editor.
 
-```
-goNexttask/
-├── cmd/api/              # アプリケーションエントリーポイント
-├── internal/             # プライベートアプリケーションコード
-│   ├── production/       # 生産管理コンテキスト
-│   ├── nc/              # NC加工連携コンテキスト
-│   ├── quality/         # 品質管理コンテキスト
-│   └── auth/            # 認証
-├── pkg/                 # 共有ライブラリ
-├── migrations/          # データベースマイグレーション
-└── configs/             # 設定ファイル
-```
+# How Does It Work?
 
-## セットアップ
+When you run `act` it reads in your GitHub Actions from `.github/workflows/` and determines the set of actions that need to be run. It uses the Docker API to either pull or build the necessary images, as defined in your workflow files and finally determines the execution path based on the dependencies that were defined. Once it has the execution path, it then uses the Docker API to run containers for each action based on the images prepared earlier. The [environment variables](https://help.github.com/en/actions/configuring-and-managing-workflows/using-environment-variables#default-environment-variables) and [filesystem](https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#file-systems) are all configured to match what GitHub provides.
 
-1. 環境変数の設定
-```bash
-cp .env.example .env
-# .envファイルを編集して環境に合わせた値を設定
-```
+Let's see it in action with a [sample repo](https://github.com/cplee/github-actions-demo)!
 
-2. データベースのセットアップ
-```bash
-# PostgreSQLを起動
-# マイグレーションを実行
-psql -U postgres -d gonexttask < migrations/001_create_tables.sql
-```
+![Demo](https://raw.githubusercontent.com/wiki/nektos/act/quickstart/act-quickstart-2.gif)
 
-3. 依存関係のインストール
-```bash
-go mod download
-```
+# Act User Guide
 
-4. アプリケーションの起動
-```bash
-go run cmd/api/main.go
-```
+Please look at the [act user guide](https://nektosact.com) for more documentation.
 
-## API エンドポイント
+# Support
 
-### 認証
-- `POST /api/v1/auth/register` - ユーザー登録
-- `POST /api/v1/auth/login` - ログイン
+Need help? Ask in [discussions](https://github.com/nektos/act/discussions)!
 
-### 生産管理
-- `POST /api/v1/production/orders` - 生産オーダー作成
-- `GET /api/v1/production/orders` - 生産オーダー一覧
-- `GET /api/v1/production/orders/{id}` - 生産オーダー詳細
-- `POST /api/v1/production/orders/{id}/start` - 生産開始
-- `POST /api/v1/production/orders/{id}/complete` - 生産完了
+# Contributing
 
-### NC加工連携
-- `POST /api/v1/nc/programs` - NCプログラム登録
-- `GET /api/v1/nc/programs` - NCプログラム一覧
-- `POST /api/v1/nc/machines/{id}/deploy` - プログラム転送
-- `GET /api/v1/nc/machines/{id}/status` - マシンステータス取得
+Want to contribute to act? Awesome! Check out the [contributing guidelines](CONTRIBUTING.md) to get involved.
 
-### 品質管理
-- `POST /api/v1/quality/inspections` - 検査結果登録
-- `GET /api/v1/quality/inspections/{id}` - 検査結果詳細
-- `GET /api/v1/quality/traceability?lot={lotNumber}` - トレーサビリティ照会
-- `GET /api/v1/quality/defect-analysis?lot={lotNumber}` - 不良分析
+## Manually building from source
 
-## 開発
-
-### テスト実行
-```bash
-go test ./...
-```
-
-### ビルド
-```bash
-go build -o bin/api cmd/api/main.go
-```
+- Install Go tools 1.20+ - (<https://golang.org/doc/install>)
+- Clone this repo `git clone git@github.com:nektos/act.git`
+- Run unit tests with `make test`
+- Build and install: `make install`

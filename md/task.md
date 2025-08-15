@@ -18,3 +18,12 @@
       "name": "Admin User",
       "role": "admin"
     }'
+
+//////////////////////////
+
+# github action ローカルの実行内容
+
+act -j test \
+  -P ubuntu-latest=ghcr.io/catthehacker/ubuntu:full-latest \
+  --container-architecture linux/amd64 \
+  -s CODECOV_TOKEN=<your-codecov-token>
