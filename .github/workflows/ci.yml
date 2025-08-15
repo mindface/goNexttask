@@ -93,46 +93,16 @@ jobs:
         CGO_ENABLED=1 GOOS=linux go build -a -installsuffix cgo -o bin/api cmd/api/main.go
 
     - name: Upload build artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: api-binary
         path: bin/api
-
-  # security:
-  #   name: Security Scan
-  #   runs-on: ubuntu-latest
-  #   if: ${{ !env.ACT }}  # actでの実行時はスキップ
-
-  #   steps:
-  #   - name: Checkout code
-  #     uses: actions/checkout@v4
-
-  #   - name: Set up Go
-  #     uses: actions/setup-go@v4
-  #     with:
-  #       go-version: ${{ env.GO_VERSION }}
-
-  #   - name: Install gosec
-  #     run: |
-  #       go env -w GOPROXY=direct
-  #       go env -w GOSUMDB=off
-  #       go install github.com/securego/gosec/v2/cmd/gosec@latest
-
-  #   - name: Run gosec
-  #     run: gosec -fmt json -out gosec-report.json ./... || true
-
-  #   - name: Upload gosec report
-  #     uses: actions/upload-artifact@v3
-  #     if: always()
-  #     with:
-  #       name: gosec-report
-  #       path: gosec-report.json
 
   docker:
     name: Build and Push Docker Image
     runs-on: ubuntu-latest
     needs: [test, build]  # security を依存から除外
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+    if: ${{ github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop') }}
 
     steps:
     - name: Checkout code
@@ -189,3 +159,34 @@ jobs:
       run: |
         echo "Deploying to production environment..."
         # Add your deployment commands here
+
+
+  # security:
+  #   name: Security Scan
+  #   runs-on: ubuntu-latest
+  #   if: ${{ !env.ACT }}  # actでの実行時はスキップ
+
+  #   steps:
+  #   - name: Checkout code
+  #     uses: actions/checkout@v4
+
+  #   - name: Set up Go
+  #     uses: actions/setup-go@v4
+  #     with:
+  #       go-version: ${{ env.GO_VERSION }}
+
+  #   - name: Install gosec
+  #     run: |
+  #       go env -w GOPROXY=direct
+  #       go env -w GOSUMDB=off
+  #       go install github.com/securego/gosec/v2/cmd/gosec@latest
+
+  #   - name: Run gosec
+  #     run: gosec -fmt json -out gosec-report.json ./... || true
+
+  #   - name: Upload gosec report
+  #     uses: actions/upload-artifact@v3
+  #     if: always()
+  #     with:
+  #       name: gosec-report
+  #       path: gosec-report.json

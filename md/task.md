@@ -27,3 +27,19 @@ act -j test \
   -P ubuntu-latest=ghcr.io/catthehacker/ubuntu:full-latest \
   --container-architecture linux/amd64 \
   -s CODECOV_TOKEN=<your-codecov-token>
+
+# dockerジョブだけ
+act -j docker \
+  -P ubuntu-latest=ghcr.io/catthehacker/ubuntu:full-latest \
+  --container-architecture linux/amd64 \
+  -b /var/run/docker.sock:/var/run/docker.sock \
+  --privileged
+
+# deployジョブだけ
+act -j deploy \
+  -P ubuntu-latest=ghcr.io/catthehacker/ubuntu:full-latest \
+  --container-architecture linux/amd64 \
+  -b /var/run/docker.sock:/var/run/docker.sock \
+  --privileged
+
+
