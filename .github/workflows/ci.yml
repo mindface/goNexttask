@@ -9,7 +9,7 @@ on:
 env:
   GO_VERSION: '1.21'
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository_owner }}/gonexttask
+  IMAGE_NAME: mindface/gonexttask
 
 jobs:
   test:
@@ -125,7 +125,7 @@ jobs:
           type=ref,event=pr
           type=sha,prefix=sha-
 
-    - name: Build and push Docker image
+    - name: Build and push Docker image2
       uses: docker/build-push-action@v5
       with:
         context: .
