@@ -33,7 +33,7 @@ import (
 func main() {
 	// Database configuration
 	dbConfig := database.Config{
-		Host:     getEnv("DB_HOST", "localhost"),
+		Host:     getEnv("DB_HOST", "postgres"),
 		Port:     5432,
 		User:     getEnv("DB_USER", "postgres"),
 		Password: getEnv("DB_PASSWORD", "password"),
@@ -96,10 +96,29 @@ func main() {
 	ncHandler.RegisterRoutes(protectedRouter)
 	qualityHandler.RegisterRoutes(protectedRouter)
 
-	// Health check endpoint
+	// Health check endpoint with DB connection check
 	router.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+		// DB接続確認
+		if err := db.Ping(); err != nil {
+			w.WriteHeader(http.StatusServiceUnavailable)
+			w.Header().Set("Content-Type", "application/json")
+			w.Write([]byte(fmt.Sprintf(`{"status":"error","message":"Database connection failed: %v"}`, err)))
+			return
+		}
+		
+		// テーブルの存在確認
+		var count int
+		err := db.QueryRow("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='public' AND table_name='users'").Scan(&count)
+		if err != nil || count == 0 {
+			w.WriteHeader(http.StatusServiceUnavailable)
+			w.Header().Set("Content-Type", "application/json")
+			w.Write([]byte(fmt.Sprintf(`{"status":"error","message":"Users table not found: %v"}`, err)))
+			return
+		}
+		
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("OK"))
+		w.Header().Set("Content-Type", "application/json")
+		w.Write([]byte(`{"status":"healthy","database":"connected","tables":"exists"}`))
 	}).Methods("GET")
 
 	// Setup server

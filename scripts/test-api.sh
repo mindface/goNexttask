@@ -49,7 +49,7 @@ LOGIN_RESPONSE=$(curl -s -X POST "$API_URL/api/v1/auth/login" \
   -H "Content-Type: application/json" \
   -d '{
     "email": "admin@test.com",
-    "password": "password123"
+    "password": "password"
   }')
 
 echo "$LOGIN_RESPONSE" | jq '.'
