@@ -19,10 +19,10 @@ func NewQualityHandler(useCase *application.QualityUseCase) *QualityHandler {
 }
 
 func (h *QualityHandler) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/api/v1/quality/inspections", h.CreateInspection).Methods("POST")
-	router.HandleFunc("/api/v1/quality/inspections/{id}", h.GetInspection).Methods("GET")
-	router.HandleFunc("/api/v1/quality/traceability", h.GetTraceability).Methods("GET")
-	router.HandleFunc("/api/v1/quality/defect-analysis", h.AnalyzeDefects).Methods("GET")
+	router.HandleFunc("/quality/inspections", h.CreateInspection).Methods("POST")
+	router.HandleFunc("/quality/inspections/{id}", h.GetInspection).Methods("GET")
+	router.HandleFunc("/quality/traceability", h.GetTraceability).Methods("GET")
+	router.HandleFunc("/quality/defect-analysis", h.AnalyzeDefects).Methods("GET")
 }
 
 type CreateInspectionRequest struct {

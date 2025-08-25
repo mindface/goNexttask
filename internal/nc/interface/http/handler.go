@@ -20,11 +20,11 @@ func NewNCHandler(useCase *application.NCUseCase) *NCHandler {
 }
 
 func (h *NCHandler) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/api/v1/nc/programs", h.RegisterProgram).Methods("POST")
-	router.HandleFunc("/api/v1/nc/programs", h.GetAllPrograms).Methods("GET")
-	router.HandleFunc("/api/v1/nc/machines/{id}/deploy", h.DeployProgram).Methods("POST")
-	router.HandleFunc("/api/v1/nc/machines/{id}/status", h.GetMachineStatus).Methods("GET")
-	router.HandleFunc("/api/v1/nc/machines/{id}/status", h.UpdateMachineStatus).Methods("POST")
+	router.HandleFunc("/nc/programs", h.RegisterProgram).Methods("POST")
+	router.HandleFunc("/nc/programs", h.GetAllPrograms).Methods("GET")
+	router.HandleFunc("/nc/machines/{id}/deploy", h.DeployProgram).Methods("POST")
+	router.HandleFunc("/nc/machines/{id}/status", h.GetMachineStatus).Methods("GET")
+	router.HandleFunc("/nc/machines/{id}/status", h.UpdateMachineStatus).Methods("POST")
 }
 
 type RegisterProgramRequest struct {

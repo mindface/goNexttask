@@ -1,5 +1,14 @@
 # API テストコマンド集
 
+docker command
+```
+# 開発環境を再起動
+docker compose -f docker-compose.dev.yml restart api
+
+# またはログ確認しながら
+docker compose -f docker-compose.dev.yml logs -f api
+```
+
 ## 前提条件
 - サーバーが起動していること（`http://localhost:8080`）
 - jqコマンドがインストールされていること（`brew install jq`）
@@ -32,7 +41,7 @@ curl -X POST http://localhost:8080/api/v1/auth/register \
 curl -X POST http://localhost:8080/api/v1/auth/login \
   -H "Content-Type: application/json" \
   -d '{
-    "email": "admin@test.com",
+    "email": "admin2@test.com",
     "password": "password"
   }' | jq '.'
 ```
@@ -42,8 +51,8 @@ curl -X POST http://localhost:8080/api/v1/auth/login \
 TOKEN=$(curl -s -X POST http://localhost:8080/api/v1/auth/login \
   -H "Content-Type: application/json" \
   -d '{
-    "email": "admin@test.com",
-    "password": "password123"
+    "email": "admin2@test.com",
+    "password": "password"
   }' | jq -r '.token')
 
 echo "Token: $TOKEN"

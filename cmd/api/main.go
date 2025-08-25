@@ -86,7 +86,8 @@ func main() {
 	router := mux.NewRouter()
 
 	// Public routes (no auth required)
-	authHandler.RegisterRoutes(router)
+	publicRouter := router.PathPrefix("/api/v1").Subrouter()
+	authHandler.RegisterRoutes(publicRouter)
 
 	// Protected routes (auth required)
 	protectedRouter := router.PathPrefix("/api/v1").Subrouter()

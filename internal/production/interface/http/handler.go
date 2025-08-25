@@ -20,11 +20,11 @@ func NewProductionHandler(useCase *application.ProductionUseCase) *ProductionHan
 }
 
 func (h *ProductionHandler) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/api/v1/production/orders", h.CreateOrder).Methods("POST")
-	router.HandleFunc("/api/v1/production/orders", h.GetAllOrders).Methods("GET")
-	router.HandleFunc("/api/v1/production/orders/{id}", h.GetOrder).Methods("GET")
-	router.HandleFunc("/api/v1/production/orders/{id}/start", h.StartProduction).Methods("POST")
-	router.HandleFunc("/api/v1/production/orders/{id}/complete", h.CompleteProduction).Methods("POST")
+	router.HandleFunc("/production/orders", h.CreateOrder).Methods("POST")
+	router.HandleFunc("/production/orders", h.GetAllOrders).Methods("GET")
+	router.HandleFunc("/production/orders/{id}", h.GetOrder).Methods("GET")
+	router.HandleFunc("/production/orders/{id}/start", h.StartProduction).Methods("POST")
+	router.HandleFunc("/production/orders/{id}/complete", h.CompleteProduction).Methods("POST")
 }
 
 type CreateOrderRequest struct {

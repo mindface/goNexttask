@@ -26,8 +26,8 @@ func NewAuthHandler(db *sql.DB, jwtManager *auth.JWTManager, passwordManager *au
 }
 
 func (h *AuthHandler) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/api/v1/auth/register", h.Register).Methods("POST")
-	router.HandleFunc("/api/v1/auth/login", h.Login).Methods("POST")
+	router.HandleFunc("/auth/register", h.Register).Methods("POST")
+	router.HandleFunc("/auth/login", h.Login).Methods("POST")
 }
 
 type RegisterRequest struct {

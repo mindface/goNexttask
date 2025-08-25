@@ -140,7 +140,7 @@ func seedProductionPlans(db *sql.DB) error {
 
 	query := `INSERT INTO production_plans 
 		(id, order_id, material, quantity, status, scheduled_start_date, scheduled_end_date) 
-		VALUES (?, ?, ?, ?, ?, ?, ?)`
+		VALUES ($1, $2, $3, $4, $5, $6, $7)`
 
 	for _, plan := range plans {
 		if _, err := db.Exec(query,
@@ -377,7 +377,7 @@ M30
 		},
 	}
 
-	query := `INSERT INTO nc_programs (id, part_id, machine_id, version, data) VALUES (?, ?, ?, ?, ?)`
+	query := `INSERT INTO nc_programs (id, part_id, machine_id, version, data) VALUES ($1, $2, $3, $4, $5)`
 
 	for _, program := range programs {
 		if _, err := db.Exec(query,
@@ -385,7 +385,7 @@ M30
 			return fmt.Errorf("failed to insert NC program %s: %w", program.ID, err)
 		}
 	}
-	
+
 	return nil
 }
 
@@ -508,7 +508,7 @@ func seedInspections(db *sql.DB) error {
 
 	query := `INSERT INTO inspections 
 		(id, lot_number, machine_id, operator_id, result, measured_values, inspection_date) 
-		VALUES (?, ?, ?, ?, ?, ?, ?)`
+		VALUES ($1, $2, $3, $4, $5, $6, $7)`
 
 	for _, inspection := range inspections {
 		if _, err := db.Exec(query,
@@ -720,7 +720,7 @@ func seedLotInventory(db *sql.DB) error {
 
 	query := `INSERT INTO lot_inventory 
 		(id, lot_number, product_type, quantity, in_out, transaction_date) 
-		VALUES (?, ?, ?, ?, ?, ?)`
+		VALUES ($1, $2, $3, $4, $5, $6)`
 
 	for _, inventory := range inventories {
 		if _, err := db.Exec(query,
